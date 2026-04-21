@@ -1,0 +1,1439 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>RESULTISE — Sistema de Captación de Pacientes · Clínicas Dentales España</title>
+<meta name="description" content="Llenamos tu agenda con pacientes cualificados. Sistema de captación exclusivo para clínicas dentales en España. Garantía de ROI 3×."/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+/* ═══════════════════════════════════════════
+   TOKENS
+═══════════════════════════════════════════ */
+:root {
+  --ink:      #0a0d14;
+  --ink2:     #111520;
+  --ink3:     #1a1f2e;
+  --surface:  #141824;
+  --line:     rgba(255,255,255,0.07);
+  --line2:    rgba(255,255,255,0.12);
+  --gold:     #c9a84c;
+  --gold2:    #e8c96a;
+  --gold-glow:rgba(201,168,76,0.15);
+  --text:     #e8eaf0;
+  --muted:    #8a90a0;
+  --faint:    rgba(255,255,255,0.04);
+  --white:    #ffffff;
+
+  --serif:  'Cormorant Garamond', Georgia, serif;
+  --sans:   'Inter', system-ui, sans-serif;
+
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --max: 1160px;
+  --pad: clamp(24px, 6vw, 80px);
+  --sec: clamp(90px, 12vw, 150px);
+}
+
+/* ═══════════════════════════════════════════
+   RESET
+═══════════════════════════════════════════ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;overflow-x:hidden}
+body{
+  font-family:var(--sans);
+  background:var(--ink);
+  color:var(--text);
+  line-height:1.6;
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+img{max-width:100%;display:block}
+a{color:inherit;text-decoration:none}
+
+/* ═══════════════════════════════════════════
+   SCROLLBAR
+═══════════════════════════════════════════ */
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:var(--ink)}
+::-webkit-scrollbar-thumb{background:var(--gold);border-radius:2px}
+
+/* ═══════════════════════════════════════════
+   CURSOR
+═══════════════════════════════════════════ */
+.cursor{
+  position:fixed;width:10px;height:10px;
+  background:var(--gold);border-radius:50%;
+  pointer-events:none;z-index:9999;
+  transform:translate(-50%,-50%);
+  transition:transform 0.1s, width 0.3s var(--ease), height 0.3s var(--ease), opacity 0.3s;
+  mix-blend-mode:difference;
+}
+.cursor-ring{
+  position:fixed;width:36px;height:36px;
+  border:1px solid rgba(201,168,76,0.5);border-radius:50%;
+  pointer-events:none;z-index:9998;
+  transform:translate(-50%,-50%);
+  transition:transform 0.18s var(--ease), width 0.4s var(--ease), height 0.4s var(--ease), opacity 0.3s;
+}
+body:not(:hover) .cursor,body:not(:hover) .cursor-ring{opacity:0}
+@media(pointer:coarse){.cursor,.cursor-ring{display:none}}
+
+/* ═══════════════════════════════════════════
+   LAYOUT
+═══════════════════════════════════════════ */
+.wrap{
+  max-width:var(--max);
+  margin:0 auto;
+  padding:0 var(--pad);
+}
+
+/* ═══════════════════════════════════════════
+   NAV
+═══════════════════════════════════════════ */
+#nav{
+  position:fixed;top:0;left:0;right:0;z-index:200;
+  padding:22px 0;
+  transition:background 0.5s, border-bottom 0.5s, padding 0.4s;
+}
+#nav.stuck{
+  background:rgba(10,13,20,0.88);
+  backdrop-filter:blur(24px);
+  border-bottom:1px solid var(--line);
+  padding:16px 0;
+}
+.nav-inner{
+  display:flex;align-items:center;justify-content:space-between;
+}
+.nav-logo{
+  font-family:var(--serif);
+  font-weight:600;font-size:1.5rem;
+  letter-spacing:0.08em;
+  color:var(--white);
+}
+.nav-logo em{color:var(--gold);font-style:normal}
+.nav-links{
+  display:flex;align-items:center;gap:36px;
+  list-style:none;
+}
+.nav-links a{
+  font-size:0.78rem;letter-spacing:0.1em;text-transform:uppercase;
+  color:var(--muted);font-weight:500;
+  transition:color 0.2s;
+}
+.nav-links a:hover{color:var(--gold)}
+.nav-cta{
+  display:inline-flex;align-items:center;gap:8px;
+  background:transparent;
+  border:1px solid var(--gold);
+  color:var(--gold);
+  font-family:var(--sans);font-weight:600;font-size:0.75rem;
+  letter-spacing:0.1em;text-transform:uppercase;
+  padding:10px 24px;border-radius:2px;
+  transition:background 0.25s, color 0.25s, box-shadow 0.25s;
+  cursor:pointer;
+}
+.nav-cta:hover{
+  background:var(--gold);color:var(--ink);
+  box-shadow:0 0 32px var(--gold-glow);
+}
+.burger{
+  display:none;flex-direction:column;gap:5px;cursor:pointer;padding:4px;
+}
+.burger span{display:block;width:22px;height:1.5px;background:var(--text);transition:0.3s}
+
+/* ═══════════════════════════════════════════
+   MOBILE NAV
+═══════════════════════════════════════════ */
+.mobile-menu{
+  position:fixed;inset:0;z-index:190;
+  background:var(--ink2);
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  gap:40px;
+  transform:translateX(100%);
+  transition:transform 0.5s var(--ease);
+}
+.mobile-menu.open{transform:translateX(0)}
+.mobile-menu a{
+  font-family:var(--serif);font-size:2.2rem;font-weight:500;
+  color:var(--text);letter-spacing:0.04em;
+  transition:color 0.2s;
+}
+.mobile-menu a:hover{color:var(--gold)}
+
+/* ═══════════════════════════════════════════
+   HERO
+═══════════════════════════════════════════ */
+#hero{
+  min-height:100svh;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  align-items:center;
+  gap:60px;
+  padding-top:100px;
+  position:relative;
+  overflow:hidden;
+}
+
+/* Background architectural lines */
+#hero::before{
+  content:'';
+  position:absolute;inset:0;
+  background-image:
+    linear-gradient(rgba(201,168,76,0.03) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(201,168,76,0.03) 1px,transparent 1px);
+  background-size:80px 80px;
+  mask-image:radial-gradient(ellipse 70% 80% at 60% 40%,black 20%,transparent 100%);
+}
+
+.hero-orb{
+  position:absolute;border-radius:50%;
+  filter:blur(100px);pointer-events:none;
+}
+.hero-orb-1{
+  width:600px;height:600px;
+  background:radial-gradient(circle,rgba(201,168,76,0.09) 0%,transparent 70%);
+  top:-150px;right:-100px;
+  animation:breathe 10s ease-in-out infinite alternate;
+}
+.hero-orb-2{
+  width:400px;height:400px;
+  background:radial-gradient(circle,rgba(201,168,76,0.05) 0%,transparent 70%);
+  bottom:50px;left:-80px;
+  animation:breathe 14s ease-in-out infinite alternate-reverse;
+}
+@keyframes breathe{
+  from{transform:scale(1) translate(0,0)}
+  to{transform:scale(1.1) translate(20px,-20px)}
+}
+
+.hero-left{position:relative;z-index:1}
+
+.hero-tag{
+  display:inline-flex;align-items:center;gap:10px;
+  margin-bottom:36px;
+}
+.hero-tag-line{
+  width:32px;height:1px;background:var(--gold);
+}
+.hero-tag-text{
+  font-size:0.7rem;letter-spacing:0.18em;text-transform:uppercase;
+  color:var(--gold);font-weight:500;
+}
+
+.hero-h1{
+  font-family:var(--serif);
+  font-size:clamp(3.2rem,5.5vw,5.5rem);
+  font-weight:500;
+  line-height:1.03;
+  letter-spacing:-0.01em;
+  color:var(--white);
+  margin-bottom:28px;
+}
+.hero-h1 em{
+  font-style:italic;
+  color:var(--gold);
+}
+
+.hero-p{
+  font-size:clamp(0.95rem,1.4vw,1.05rem);
+  color:var(--muted);
+  line-height:1.8;
+  max-width:480px;
+  margin-bottom:52px;
+}
+
+.hero-actions{
+  display:flex;align-items:center;gap:24px;flex-wrap:wrap;
+}
+.btn-gold{
+  display:inline-flex;align-items:center;gap:10px;
+  background:var(--gold);
+  color:var(--ink);
+  font-family:var(--sans);font-weight:600;font-size:0.8rem;
+  letter-spacing:0.08em;text-transform:uppercase;
+  padding:16px 36px;border-radius:2px;border:none;cursor:pointer;
+  transition:background 0.25s, box-shadow 0.3s, transform 0.15s;
+  position:relative;overflow:hidden;
+}
+.btn-gold::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(255,255,255,0.15),transparent);
+  opacity:0;transition:opacity 0.2s;
+}
+.btn-gold:hover{
+  background:var(--gold2);
+  box-shadow:0 0 48px rgba(201,168,76,0.4),0 4px 24px rgba(0,0,0,0.3);
+  transform:translateY(-2px);
+}
+.btn-gold:hover::after{opacity:1}
+.btn-ghost-gold{
+  display:inline-flex;align-items:center;gap:8px;
+  color:var(--muted);font-size:0.8rem;
+  letter-spacing:0.04em;
+  transition:color 0.2s;
+}
+.btn-ghost-gold svg{transition:transform 0.2s}
+.btn-ghost-gold:hover{color:var(--gold)}
+.btn-ghost-gold:hover svg{transform:translateX(5px)}
+
+.hero-stats{
+  display:flex;gap:44px;flex-wrap:wrap;
+  margin-top:60px;padding-top:44px;
+  border-top:1px solid var(--line);
+}
+.hs-num{
+  font-family:var(--serif);font-weight:600;
+  font-size:2.8rem;line-height:1;
+  color:var(--white);
+}
+.hs-num span{color:var(--gold)}
+.hs-label{font-size:0.78rem;color:var(--muted);margin-top:6px;line-height:1.4}
+
+/* HERO RIGHT — floating card */
+.hero-right{
+  position:relative;z-index:1;
+  display:flex;align-items:center;justify-content:center;
+}
+.hero-card{
+  background:var(--surface);
+  border:1px solid var(--line2);
+  border-radius:4px;
+  padding:44px;
+  width:100%;max-width:420px;
+  position:relative;
+  overflow:hidden;
+  box-shadow:0 40px 80px rgba(0,0,0,0.4);
+}
+.hero-card::before{
+  content:'';
+  position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,transparent,var(--gold),transparent);
+}
+.hc-tag{
+  font-size:0.68rem;letter-spacing:0.14em;text-transform:uppercase;
+  color:var(--gold);font-weight:500;margin-bottom:20px;
+}
+.hc-title{
+  font-family:var(--serif);font-size:1.7rem;font-weight:500;
+  color:var(--white);margin-bottom:28px;line-height:1.2;
+}
+.hc-row{
+  display:flex;align-items:center;gap:14px;
+  padding:14px 0;
+  border-bottom:1px solid var(--line);
+}
+.hc-row:last-of-type{border-bottom:none;padding-bottom:0}
+.hc-dot{
+  width:8px;height:8px;border-radius:50%;
+  background:var(--gold);flex-shrink:0;
+}
+.hc-row-text{font-size:0.85rem;color:var(--muted);line-height:1.5}
+.hc-row-text strong{color:var(--text);font-weight:500}
+.hc-badge{
+  display:inline-flex;align-items:center;gap:6px;
+  background:rgba(201,168,76,0.1);
+  border:1px solid rgba(201,168,76,0.25);
+  border-radius:2px;
+  padding:4px 10px;
+  font-size:0.7rem;color:var(--gold);font-weight:500;
+  letter-spacing:0.06em;
+  margin-top:24px;
+}
+
+/* ═══════════════════════════════════════════
+   TICKER
+═══════════════════════════════════════════ */
+.ticker{
+  border-top:1px solid var(--line);
+  border-bottom:1px solid var(--line);
+  background:var(--ink2);
+  padding:18px 0;
+  overflow:hidden;
+  position:relative;
+}
+.ticker-track{
+  display:flex;gap:60px;
+  width:max-content;
+  animation:ticker 30s linear infinite;
+}
+@keyframes ticker{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.ticker-item{
+  display:flex;align-items:center;gap:14px;
+  white-space:nowrap;
+  font-size:0.72rem;letter-spacing:0.14em;text-transform:uppercase;
+  color:var(--muted);font-weight:500;
+}
+.ticker-item .sep{color:var(--gold);font-size:0.6rem}
+
+/* ═══════════════════════════════════════════
+   SECTIONS COMMON
+═══════════════════════════════════════════ */
+section{padding:var(--sec) 0}
+.sec-alt{background:var(--ink2)}
+.eyebrow{
+  display:flex;align-items:center;gap:12px;
+  font-size:0.68rem;letter-spacing:0.18em;text-transform:uppercase;
+  color:var(--gold);font-weight:500;margin-bottom:20px;
+}
+.eyebrow::before{
+  content:'';display:block;
+  width:28px;height:1px;background:var(--gold);
+}
+.sec-title{
+  font-family:var(--serif);
+  font-size:clamp(2.2rem,4vw,3.8rem);
+  font-weight:500;line-height:1.08;
+  color:var(--white);letter-spacing:-0.01em;
+}
+.sec-title em{color:var(--gold);font-style:italic}
+.sec-sub{
+  font-size:1rem;color:var(--muted);
+  line-height:1.8;max-width:520px;margin-top:18px;
+}
+
+/* ═══════════════════════════════════════════
+   PROBLEM
+═══════════════════════════════════════════ */
+.prob-grid{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:80px;align-items:center;margin-top:70px;
+}
+.prob-items{display:flex;flex-direction:column;gap:0}
+.prob-item{
+  display:flex;gap:20px;
+  padding:28px 0;
+  border-bottom:1px solid var(--line);
+  transition:padding-left 0.3s var(--ease);
+  cursor:default;
+}
+.prob-item:first-child{padding-top:0}
+.prob-item:last-child{border-bottom:none}
+.prob-item:hover{padding-left:8px}
+.prob-num{
+  font-family:var(--serif);font-size:3rem;font-weight:400;
+  color:rgba(201,168,76,0.15);line-height:1;
+  flex-shrink:0;width:48px;
+  transition:color 0.3s;
+}
+.prob-item:hover .prob-num{color:rgba(201,168,76,0.4)}
+.prob-title{
+  font-family:var(--serif);font-size:1.15rem;font-weight:500;
+  color:var(--text);margin-bottom:8px;
+}
+.prob-text{font-size:0.85rem;color:var(--muted);line-height:1.75}
+
+.prob-visual{
+  background:var(--surface);
+  border:1px solid var(--line);
+  border-radius:4px;
+  padding:44px;
+  position:relative;overflow:hidden;
+}
+.prob-visual::before{
+  content:'';position:absolute;
+  top:-80px;right:-80px;
+  width:250px;height:250px;
+  background:radial-gradient(circle,var(--gold-glow) 0%,transparent 70%);
+}
+.pv-head{
+  font-size:0.68rem;letter-spacing:0.14em;text-transform:uppercase;
+  color:var(--muted);margin-bottom:32px;
+}
+.pv-row{display:flex;align-items:center;gap:16px;margin-bottom:22px}
+.pv-label{font-size:0.8rem;color:var(--muted);width:110px;flex-shrink:0;line-height:1.3}
+.pv-track{
+  flex:1;height:6px;
+  background:rgba(255,255,255,0.05);
+  border-radius:100px;overflow:hidden;
+}
+.pv-fill{height:100%;border-radius:100px;transition:width 1.6s var(--ease)}
+.pv-val{font-size:0.8rem;font-weight:600;color:var(--text);width:32px;text-align:right}
+.pv-note{
+  margin-top:32px;padding:18px;
+  background:rgba(201,168,76,0.06);
+  border:1px solid rgba(201,168,76,0.2);
+  border-radius:2px;
+  font-size:0.82rem;color:var(--gold);line-height:1.65;
+}
+
+/* ═══════════════════════════════════════════
+   PROCESS
+═══════════════════════════════════════════ */
+#process{position:relative}
+.proc-steps{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:1px;
+  background:var(--line);
+  margin-top:70px;
+  border:1px solid var(--line);
+  border-radius:4px;overflow:hidden;
+}
+.proc-step{
+  background:var(--ink2);
+  padding:48px 36px;
+  position:relative;
+  transition:background 0.3s;
+}
+.proc-step:hover{background:var(--surface)}
+.proc-step::before{
+  content:'';
+  position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--gold),transparent);
+  opacity:0;transition:opacity 0.3s;
+}
+.proc-step:hover::before{opacity:1}
+.proc-n{
+  font-family:var(--serif);font-size:5rem;font-weight:400;
+  color:rgba(201,168,76,0.08);line-height:1;
+  position:absolute;top:24px;right:28px;
+  transition:color 0.3s;
+}
+.proc-step:hover .proc-n{color:rgba(201,168,76,0.15)}
+.proc-icon{
+  width:48px;height:48px;border-radius:2px;
+  background:rgba(201,168,76,0.1);
+  border:1px solid rgba(201,168,76,0.2);
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.3rem;margin-bottom:28px;
+}
+.proc-title{
+  font-family:var(--serif);font-size:1.25rem;font-weight:500;
+  color:var(--white);margin-bottom:14px;
+}
+.proc-text{font-size:0.85rem;color:var(--muted);line-height:1.75}
+
+/* ═══════════════════════════════════════════
+   RESULTS
+═══════════════════════════════════════════ */
+.res-nums{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:1px;background:var(--line);
+  border:1px solid var(--line);border-radius:4px;
+  overflow:hidden;margin-top:70px;
+}
+.res-num-card{
+  background:var(--surface);padding:44px 36px;
+  position:relative;overflow:hidden;
+  transition:background 0.3s;
+}
+.res-num-card:hover{background:#1c2130}
+.res-num-card::after{
+  content:'';
+  position:absolute;bottom:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,transparent,var(--gold),transparent);
+}
+.rn-num{
+  font-family:var(--serif);font-weight:600;
+  font-size:3.8rem;line-height:1;
+  color:var(--white);margin-bottom:10px;
+}
+.rn-num span{color:var(--gold)}
+.rn-label{font-size:0.85rem;color:var(--muted);line-height:1.6}
+
+.testimonial{
+  margin-top:24px;
+  background:var(--surface);
+  border:1px solid var(--line);
+  border-left:3px solid var(--gold);
+  border-radius:0 4px 4px 0;
+  padding:44px 52px;
+  display:grid;
+  grid-template-columns:1fr auto;
+  gap:48px;align-items:center;
+  position:relative;overflow:hidden;
+}
+.testimonial::before{
+  content:'\201C';
+  position:absolute;top:-20px;right:48px;
+  font-family:var(--serif);font-size:220px;font-weight:400;
+  line-height:1;
+  color:rgba(201,168,76,0.04);pointer-events:none;
+}
+.t-text{
+  font-family:var(--serif);
+  font-size:clamp(1.1rem,2vw,1.4rem);
+  font-style:italic;font-weight:400;
+  color:var(--text);line-height:1.75;
+}
+.t-author-name{
+  font-family:var(--serif);font-weight:600;
+  font-size:1rem;color:var(--white);white-space:nowrap;
+}
+.t-author-role{font-size:0.78rem;color:var(--muted);margin-top:4px;white-space:nowrap}
+.t-stars{color:var(--gold);font-size:0.8rem;margin-top:8px;letter-spacing:2px}
+
+/* ═══════════════════════════════════════════
+   FOR WHO
+═══════════════════════════════════════════ */
+.fw-grid{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:1px;background:var(--line);
+  border:1px solid var(--line);border-radius:4px;
+  overflow:hidden;margin-top:70px;
+}
+.fw-card{
+  background:var(--ink2);padding:40px;
+  display:flex;gap:20px;align-items:flex-start;
+  transition:background 0.3s;
+}
+.fw-card:hover{background:var(--surface)}
+.fw-icon-wrap{
+  width:48px;height:48px;flex-shrink:0;
+  border:1px solid var(--line2);border-radius:2px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.3rem;
+  background:var(--faint);
+}
+.fw-title{
+  font-family:var(--serif);font-size:1.1rem;font-weight:500;
+  color:var(--white);margin-bottom:10px;
+}
+.fw-text{font-size:0.85rem;color:var(--muted);line-height:1.7}
+
+/* ═══════════════════════════════════════════
+   INCLUDED
+═══════════════════════════════════════════ */
+.inc-grid{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:16px;margin-top:70px;
+}
+.inc-item{
+  display:flex;gap:16px;
+  padding:24px 28px;
+  background:var(--surface);
+  border:1px solid var(--line);border-radius:2px;
+  align-items:flex-start;
+  transition:border-color 0.25s, transform 0.2s;
+}
+.inc-item:hover{border-color:rgba(201,168,76,0.35);transform:translateY(-2px)}
+.inc-check{
+  width:24px;height:24px;border-radius:2px;
+  background:rgba(201,168,76,0.1);
+  border:1px solid rgba(201,168,76,0.3);
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;margin-top:2px;
+}
+.inc-check svg{width:11px;height:11px}
+.inc-title{
+  font-family:var(--serif);font-size:1rem;font-weight:500;
+  color:var(--white);margin-bottom:5px;
+}
+.inc-sub{font-size:0.82rem;color:var(--muted);line-height:1.6}
+
+/* ═══════════════════════════════════════════
+   FAQ
+═══════════════════════════════════════════ */
+.faq-list{max-width:800px;margin:70px auto 0}
+.faq-item{border-bottom:1px solid var(--line)}
+.faq-q{
+  width:100%;background:none;border:none;
+  padding:26px 0;cursor:pointer;
+  display:flex;justify-content:space-between;align-items:center;gap:24px;
+}
+.faq-q-text{
+  font-family:var(--serif);font-size:1.1rem;font-weight:500;
+  color:var(--text);text-align:left;
+  transition:color 0.2s;
+}
+.faq-q:hover .faq-q-text{color:var(--gold)}
+.faq-icon{
+  width:30px;height:30px;border-radius:50%;
+  border:1px solid var(--line2);
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;color:var(--muted);
+  transition:border-color 0.2s, color 0.2s, transform 0.3s;
+}
+.faq-item.open .faq-icon{
+  border-color:var(--gold);color:var(--gold);transform:rotate(45deg);
+}
+.faq-a{overflow:hidden;max-height:0;transition:max-height 0.45s var(--ease)}
+.faq-a-inner{
+  padding-bottom:24px;font-size:0.9rem;
+  color:var(--muted);line-height:1.8;
+}
+.faq-item.open .faq-a{max-height:300px}
+
+/* ═══════════════════════════════════════════
+   CTA SECTION
+═══════════════════════════════════════════ */
+.cta-sec{
+  text-align:center;
+  position:relative;overflow:hidden;
+  background:var(--ink2);
+}
+.cta-sec::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 60% 70% at 50% 50%,rgba(201,168,76,0.07) 0%,transparent 70%);
+}
+.cta-sec-inner{position:relative;z-index:1}
+.cta-title{
+  font-family:var(--serif);
+  font-size:clamp(2.4rem,5vw,4.5rem);
+  font-weight:500;line-height:1.06;
+  color:var(--white);
+  max-width:750px;margin:0 auto 22px;
+}
+.cta-title em{color:var(--gold);font-style:italic}
+.cta-sub{
+  font-size:1rem;color:var(--muted);
+  max-width:440px;margin:0 auto 52px;line-height:1.8;
+}
+.cta-guarantee{
+  display:inline-flex;align-items:center;gap:8px;
+  font-size:0.78rem;color:var(--muted);margin-top:22px;
+}
+.cta-guarantee span{color:var(--gold)}
+
+/* ═══════════════════════════════════════════
+   FORM SECTION
+═══════════════════════════════════════════ */
+#reservar{scroll-margin-top:80px}
+.form-wrap{max-width:640px;margin:0 auto}
+.form-head{text-align:center;margin-bottom:52px}
+.form-card{
+  background:var(--surface);
+  border:1px solid var(--line);
+  border-radius:4px;
+  padding:clamp(36px,6vw,60px);
+  position:relative;overflow:hidden;
+}
+.form-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,transparent,var(--gold),transparent);
+}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.form-group{margin-bottom:22px}
+label{
+  display:block;
+  font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;
+  color:var(--muted);font-weight:500;margin-bottom:9px;
+}
+input,select,textarea{
+  width:100%;
+  background:rgba(255,255,255,0.04);
+  border:1px solid var(--line2);border-radius:2px;
+  padding:14px 16px;color:var(--text);
+  font-family:var(--sans);font-size:0.9rem;
+  outline:none;transition:border-color 0.2s, box-shadow 0.2s;
+  -webkit-appearance:none;
+}
+input::placeholder,textarea::placeholder{color:rgba(138,144,160,0.4)}
+input:focus,select:focus,textarea:focus{
+  border-color:var(--gold);
+  box-shadow:0 0 0 3px rgba(201,168,76,0.1);
+}
+select{
+  cursor:pointer;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%238a90a0' d='M1 1l5 5 5-5'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 14px center;
+  padding-right:36px;
+}
+select option{background:var(--surface)}
+textarea{resize:vertical;min-height:100px}
+.submit-btn{
+  width:100%;
+  background:var(--gold);color:var(--ink);
+  font-family:var(--sans);font-weight:600;font-size:0.85rem;
+  letter-spacing:0.1em;text-transform:uppercase;
+  padding:18px;border-radius:2px;border:none;cursor:pointer;
+  margin-top:6px;
+  transition:background 0.2s, box-shadow 0.25s, transform 0.15s;
+  position:relative;overflow:hidden;
+}
+.submit-btn:hover{
+  background:var(--gold2);
+  box-shadow:0 0 40px rgba(201,168,76,0.4);
+  transform:translateY(-1px);
+}
+.submit-btn:disabled{opacity:0.5;cursor:not-allowed;transform:none}
+.form-note{
+  text-align:center;margin-top:22px;
+  font-size:0.76rem;color:var(--muted);line-height:1.6;
+}
+#form-error{
+  display:none;
+  background:rgba(255,80,80,0.08);
+  border:1px solid rgba(255,80,80,0.25);
+  border-radius:2px;padding:13px 16px;
+  font-size:0.83rem;color:#ff8080;margin-top:14px;
+}
+#form-success{display:none;text-align:center;padding:52px 20px}
+#form-success .s-icon{
+  width:72px;height:72px;border-radius:50%;
+  background:rgba(201,168,76,0.1);
+  border:1px solid rgba(201,168,76,0.3);
+  display:flex;align-items:center;justify-content:center;
+  margin:0 auto 24px;font-size:2rem;
+}
+#form-success h3{
+  font-family:var(--serif);font-size:1.8rem;
+  font-weight:500;color:var(--white);margin-bottom:12px;
+}
+#form-success p{font-size:0.9rem;color:var(--muted);line-height:1.8}
+
+/* ═══════════════════════════════════════════
+   FOOTER
+═══════════════════════════════════════════ */
+footer{
+  padding:48px 0;
+  border-top:1px solid var(--line);
+  background:var(--ink);
+}
+.footer-inner{
+  display:flex;align-items:center;
+  justify-content:space-between;flex-wrap:wrap;gap:20px;
+}
+.footer-logo{
+  font-family:var(--serif);font-weight:600;
+  font-size:1.25rem;letter-spacing:0.08em;color:var(--white);
+}
+.footer-logo em{color:var(--gold);font-style:normal}
+.footer-copy{font-size:0.78rem;color:var(--muted)}
+.footer-links{display:flex;gap:28px}
+.footer-links a{
+  font-size:0.78rem;color:var(--muted);
+  transition:color 0.2s;
+}
+.footer-links a:hover{color:var(--gold)}
+
+/* ═══════════════════════════════════════════
+   SCROLL REVEAL
+═══════════════════════════════════════════ */
+.r{opacity:0;transform:translateY(36px);transition:opacity 0.8s var(--ease),transform 0.8s var(--ease)}
+.r.in{opacity:1;transform:translateY(0)}
+.r-d1{transition-delay:0.1s}
+.r-d2{transition-delay:0.2s}
+.r-d3{transition-delay:0.3s}
+.r-left{opacity:0;transform:translateX(-40px);transition:opacity 0.8s var(--ease),transform 0.8s var(--ease)}
+.r-left.in{opacity:1;transform:translateX(0)}
+.r-right{opacity:0;transform:translateX(40px);transition:opacity 0.8s var(--ease),transform 0.8s var(--ease)}
+.r-right.in{opacity:1;transform:translateX(0)}
+
+/* ═══════════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════════ */
+@media(max-width:1000px){
+  #hero{grid-template-columns:1fr;padding-top:110px;padding-bottom:60px}
+  .hero-right{display:none}
+  .prob-grid{grid-template-columns:1fr}
+  .proc-steps{grid-template-columns:1fr}
+  .res-nums{grid-template-columns:1fr 1fr}
+  .fw-grid{grid-template-columns:1fr}
+  .inc-grid{grid-template-columns:1fr}
+  .testimonial{grid-template-columns:1fr}
+  .t-author-name,.t-author-role,.t-stars{text-align:left}
+  .nav-links{display:none}
+  .burger{display:flex}
+}
+@media(max-width:600px){
+  .res-nums{grid-template-columns:1fr}
+  .form-row{grid-template-columns:1fr}
+  .hero-stats{gap:28px}
+  .footer-inner{flex-direction:column;align-items:flex-start;gap:14px}
+}
+</style>
+</head>
+<body>
+
+<!-- CURSOR -->
+<div class="cursor" id="cur"></div>
+<div class="cursor-ring" id="curR"></div>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#problema" onclick="closeMenu()">El Problema</a>
+  <a href="#como-funciona" onclick="closeMenu()">Cómo Funciona</a>
+  <a href="#resultados" onclick="closeMenu()">Resultados</a>
+  <a href="#reservar" onclick="closeMenu()">Reservar Llamada</a>
+</div>
+
+<!-- ── NAV ──────────────────────────────── -->
+<nav id="nav">
+  <div class="wrap nav-inner">
+    <div class="nav-logo">RESULT<em>ISE</em></div>
+    <ul class="nav-links">
+      <li><a href="#problema">El Problema</a></li>
+      <li><a href="#como-funciona">Cómo Funciona</a></li>
+      <li><a href="#resultados">Resultados</a></li>
+      <li><a href="#reservar" class="nav-cta">Reservar Llamada</a></li>
+    </ul>
+    <div class="burger" id="burger" onclick="toggleMenu()">
+      <span></span><span></span><span></span>
+    </div>
+  </div>
+</nav>
+
+<!-- ── HERO ─────────────────────────────── -->
+<section id="hero">
+  <div class="hero-orb hero-orb-1"></div>
+  <div class="hero-orb hero-orb-2"></div>
+  <div class="wrap" style="display:contents">
+    <div class="hero-left" style="padding:0 var(--pad)">
+      <div class="hero-tag">
+        <div class="hero-tag-line"></div>
+        <span class="hero-tag-text">Sistema exclusivo · España · Clínicas Dentales</span>
+      </div>
+      <h1 class="hero-h1">
+        Tu agenda llena<br/>de pacientes<br/><em>cualificados.</em>
+      </h1>
+      <p class="hero-p">
+        RESULTISE es el sistema de captación que convierte desconocidos en citas confirmadas para tu clínica dental — predecible, medible y con garantía de ROI 3×.
+      </p>
+      <div class="hero-actions">
+        <a href="#reservar" class="btn-gold">
+          Quiero más pacientes
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+        <a href="#como-funciona" class="btn-ghost-gold">
+          Ver cómo funciona
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+      </div>
+      <div class="hero-stats">
+        <div>
+          <div class="hs-num">+<span>48</span></div>
+          <div class="hs-label">Pacientes nuevos<br/>al mes, de media</div>
+        </div>
+        <div>
+          <div class="hs-num"><span>3×</span></div>
+          <div class="hs-label">ROI garantizado<br/>o te devolvemos</div>
+        </div>
+        <div>
+          <div class="hs-num"><span>90</span>d</div>
+          <div class="hs-label">Para ver los<br/>primeros resultados</div>
+        </div>
+      </div>
+    </div>
+    <div class="hero-right" style="padding:0 var(--pad)">
+      <div class="hero-card r-right">
+        <div class="hc-tag">Sistema activo · España</div>
+        <div class="hc-title">Lo que obtienes<br/>con RESULTISE</div>
+        <div class="hc-row">
+          <div class="hc-dot"></div>
+          <div class="hc-row-text"><strong>Estrategia personalizada</strong> para tu zona geográfica y perfil de paciente</div>
+        </div>
+        <div class="hc-row">
+          <div class="hc-dot"></div>
+          <div class="hc-row-text"><strong>Campañas gestionadas</strong> en Google Ads y Meta con optimización semanal</div>
+        </div>
+        <div class="hc-row">
+          <div class="hc-dot"></div>
+          <div class="hc-row-text"><strong>Seguimiento automatizado</strong> de leads hasta confirmar la cita</div>
+        </div>
+        <div class="hc-row">
+          <div class="hc-dot"></div>
+          <div class="hc-row-text"><strong>Dashboard en tiempo real</strong> con cada euro invertido y cada cita generada</div>
+        </div>
+        <div class="hc-row">
+          <div class="hc-dot"></div>
+          <div class="hc-row-text"><strong>Garantía ROI 3×</strong> — si no se cumple, te devolvemos el dinero</div>
+        </div>
+        <div class="hc-badge">
+          <svg width="8" height="8" viewBox="0 0 8 8"><circle cx="4" cy="4" r="3" fill="#c9a84c"/><circle cx="4" cy="4" r="1.5" fill="#0a0d14"/></svg>
+          Plazas limitadas · Solo 3 clínicas nuevas al mes
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── TICKER ────────────────────────────── -->
+<div class="ticker">
+  <div class="ticker-track">
+    <!-- duplicate for infinite loop -->
+    <div class="ticker-item"><span class="sep">✦</span> Captación predecible</div>
+    <div class="ticker-item"><span class="sep">✦</span> ROI garantizado</div>
+    <div class="ticker-item"><span class="sep">✦</span> Clínicas dentales · España</div>
+    <div class="ticker-item"><span class="sep">✦</span> +48 pacientes/mes de media</div>
+    <div class="ticker-item"><span class="sep">✦</span> Sistema llave en mano</div>
+    <div class="ticker-item"><span class="sep">✦</span> Solo 3 plazas nuevas al mes</div>
+    <div class="ticker-item"><span class="sep">✦</span> Google Ads · Meta Ads</div>
+    <div class="ticker-item"><span class="sep">✦</span> Resultados en 90 días</div>
+    <div class="ticker-item"><span class="sep">✦</span> Captación predecible</div>
+    <div class="ticker-item"><span class="sep">✦</span> ROI garantizado</div>
+    <div class="ticker-item"><span class="sep">✦</span> Clínicas dentales · España</div>
+    <div class="ticker-item"><span class="sep">✦</span> +48 pacientes/mes de media</div>
+    <div class="ticker-item"><span class="sep">✦</span> Sistema llave en mano</div>
+    <div class="ticker-item"><span class="sep">✦</span> Solo 3 plazas nuevas al mes</div>
+    <div class="ticker-item"><span class="sep">✦</span> Google Ads · Meta Ads</div>
+    <div class="ticker-item"><span class="sep">✦</span> Resultados en 90 días</div>
+  </div>
+</div>
+
+<!-- ── PROBLEM ───────────────────────────── -->
+<section id="problema">
+  <div class="wrap">
+    <div class="r">
+      <div class="eyebrow">El problema real</div>
+      <h2 class="sec-title">¿Por qué tu inversión<br/>en marketing <em>no funciona?</em></h2>
+    </div>
+    <div class="prob-grid">
+      <div class="prob-items r-left">
+        <div class="prob-item">
+          <div class="prob-num">01</div>
+          <div>
+            <div class="prob-title">Publicidad cara sin retorno claro</div>
+            <div class="prob-text">Inviertes en Google Ads o redes sociales pero no sabes qué pacientes vienen de ahí, ni cuánto te cuesta cada uno realmente.</div>
+          </div>
+        </div>
+        <div class="prob-item">
+          <div class="prob-num">02</div>
+          <div>
+            <div class="prob-title">Agenda con huecos que no se llenan</div>
+            <div class="prob-text">Tienes sillas vacías a media semana y no existe un proceso sistemático que llene esas horas de forma predecible.</div>
+          </div>
+        </div>
+        <div class="prob-item">
+          <div class="prob-num">03</div>
+          <div>
+            <div class="prob-title">Dependencia total del boca a boca</div>
+            <div class="prob-text">Las recomendaciones son geniales, pero no son escalables. No puedes construir un negocio sólido sin un canal de captación controlado.</div>
+          </div>
+        </div>
+        <div class="prob-item">
+          <div class="prob-num">04</div>
+          <div>
+            <div class="prob-title">Sin tiempo para hacer marketing</div>
+            <div class="prob-text">Eres dentista, no especialista en marketing digital. Cada hora que dedicas a esto es una hora menos para lo que realmente importa.</div>
+          </div>
+        </div>
+      </div>
+      <div class="prob-visual r-right">
+        <div class="pv-head">Origen de pacientes sin sistema · Promedio del sector</div>
+        <div class="pv-row">
+          <div class="pv-label">Recomendaciones</div>
+          <div class="pv-track"><div class="pv-fill" style="width:0%;background:linear-gradient(90deg,#c9a84c,#e8c96a)" data-w="68%"></div></div>
+          <div class="pv-val">68%</div>
+        </div>
+        <div class="pv-row">
+          <div class="pv-label">Google Orgánico</div>
+          <div class="pv-track"><div class="pv-fill" style="width:0%;background:linear-gradient(90deg,#6b7280,#9ca3af)" data-w="18%"></div></div>
+          <div class="pv-val">18%</div>
+        </div>
+        <div class="pv-row">
+          <div class="pv-label">Redes Sociales</div>
+          <div class="pv-track"><div class="pv-fill" style="width:0%;background:linear-gradient(90deg,#4b5563,#6b7280)" data-w="9%"></div></div>
+          <div class="pv-val">9%</div>
+        </div>
+        <div class="pv-row">
+          <div class="pv-label">Sistema activo</div>
+          <div class="pv-track"><div class="pv-fill" style="width:0%;background:linear-gradient(90deg,#c9a84c,#e8c96a)" data-w="5%"></div></div>
+          <div class="pv-val">5%</div>
+        </div>
+        <div class="pv-note">✦ Con RESULTISE, ese 5% se convierte en tu canal más rentable y predecible — en 90 días.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── PROCESS ───────────────────────────── -->
+<section id="como-funciona" class="sec-alt">
+  <div class="wrap">
+    <div class="r" style="text-align:center">
+      <div class="eyebrow" style="justify-content:center">El método</div>
+      <h2 class="sec-title">Cómo funciona<br/><em>RESULTISE</em></h2>
+      <p class="sec-sub" style="margin:18px auto 0">Un sistema en 3 fases para generar pacientes cualificados de forma continua.</p>
+    </div>
+    <div class="proc-steps">
+      <div class="proc-step r r-d1">
+        <div class="proc-n">1</div>
+        <div class="proc-icon">🔍</div>
+        <div class="proc-title">Análisis y estrategia personalizada</div>
+        <div class="proc-text">Estudiamos tu clínica, zona geográfica, competencia y paciente ideal. Diseñamos un sistema de captación único — sin plantillas genéricas.</div>
+      </div>
+      <div class="proc-step r r-d2">
+        <div class="proc-n">2</div>
+        <div class="proc-icon">🚀</div>
+        <div class="proc-title">Activación del sistema de atracción</div>
+        <div class="proc-text">Lanzamos campañas hipersegmentadas, optimizamos tu presencia digital y activamos secuencias automatizadas para convertir leads en citas.</div>
+      </div>
+      <div class="proc-step r r-d3">
+        <div class="proc-n">3</div>
+        <div class="proc-icon">📊</div>
+        <div class="proc-title">Optimización y escala continua</div>
+        <div class="proc-text">Medimos cada euro y cada cita. Optimizamos semanalmente y escalamos los canales que funcionan. Tú ves los números en tiempo real.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── RESULTS ───────────────────────────── -->
+<section id="resultados">
+  <div class="wrap">
+    <div class="r">
+      <div class="eyebrow">Resultados reales</div>
+      <h2 class="sec-title">Números que<br/><em>hablan por sí solos</em></h2>
+      <p class="sec-sub">Datos reales de clínicas dentales en España trabajando con el sistema RESULTISE.</p>
+    </div>
+    <div class="res-nums">
+      <div class="res-num-card r r-d1">
+        <div class="rn-num">+<span>48</span></div>
+        <div class="rn-label">Nuevos pacientes mensuales de media en clínicas activas durante 6 meses con el programa.</div>
+      </div>
+      <div class="res-num-card r r-d2">
+        <div class="rn-num"><span>€</span>3.2<span>k</span></div>
+        <div class="rn-label">Valor medio por paciente captado incluyendo tratamientos complementarios posteriores.</div>
+      </div>
+      <div class="res-num-card r r-d3">
+        <div class="rn-num"><span>3</span>× <span style="font-size:2.2rem">ROI</span></div>
+        <div class="rn-label">Retorno mínimo garantizado. Si no lo conseguimos, te devolvemos el dinero sin excepciones.</div>
+      </div>
+    </div>
+    <div class="testimonial r">
+      <div class="t-text">
+        "En los primeros 60 días con RESULTISE pasamos de 12 nuevos pacientes al mes a 41. Lo que más valoro no es solo el volumen — es que son pacientes que ya vienen informados y con ganas de tratarse. El trabajo de mi equipo ha cambiado por completo."
+      </div>
+      <div>
+        <div class="t-author-name">Dr. Alejandro Morales</div>
+        <div class="t-author-role">Director · Clínica Novadent, Sevilla</div>
+        <div class="t-stars">★★★★★</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── FOR WHO ────────────────────────────── -->
+<section class="sec-alt">
+  <div class="wrap">
+    <div class="r" style="text-align:center">
+      <div class="eyebrow" style="justify-content:center">¿Es para ti?</div>
+      <h2 class="sec-title">RESULTISE es para ti <em>si…</em></h2>
+    </div>
+    <div class="fw-grid">
+      <div class="fw-card r r-d1">
+        <div class="fw-icon-wrap">🏥</div>
+        <div>
+          <div class="fw-title">Tienes una clínica dental establecida</div>
+          <div class="fw-text">Llevas al menos 1 año en funcionamiento y quieres crecer de forma sistemática sin depender del azar o las temporadas.</div>
+        </div>
+      </div>
+      <div class="fw-card r r-d2">
+        <div class="fw-icon-wrap">📈</div>
+        <div>
+          <div class="fw-title">Quieres crecer más allá del boca a boca</div>
+          <div class="fw-text">Las recomendaciones ya no son suficientes para alcanzar tus objetivos de facturación y necesitas un canal predecible.</div>
+        </div>
+      </div>
+      <div class="fw-card r r-d1">
+        <div class="fw-icon-wrap">🎯</div>
+        <div>
+          <div class="fw-title">Buscas pacientes de alto valor</div>
+          <div class="fw-text">No cualquier paciente. Quieres atraer personas interesadas en implantes, ortodoncia, carillas y tratamientos de mayor ticket.</div>
+        </div>
+      </div>
+      <div class="fw-card r r-d2">
+        <div class="fw-icon-wrap">⏱️</div>
+        <div>
+          <div class="fw-title">No tienes tiempo para el marketing</div>
+          <div class="fw-text">Prefieres delegar a un equipo especializado que se encargue de todo mientras tú te centras en tus pacientes.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── INCLUDED ──────────────────────────── -->
+<section>
+  <div class="wrap">
+    <div class="r">
+      <div class="eyebrow">Qué incluye</div>
+      <h2 class="sec-title">Todo incluido.<br/><em>Sin sorpresas.</em></h2>
+      <p class="sec-sub">Sin extras ocultos. Todo lo que activa y sostiene el sistema está dentro desde el primer día.</p>
+    </div>
+    <div class="inc-grid">
+      <div class="inc-item r r-d1">
+        <div class="inc-check">
+          <svg viewBox="0 0 11 9" fill="none"><path d="M1 4.5L4 7.5L10 1" stroke="#c9a84c" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div>
+          <div class="inc-title">Estrategia de captación personalizada</div>
+          <div class="inc-sub">Diseñada para tu clínica, zona y tipo de paciente objetivo. Sin copias, sin plantillas.</div>
+        </div>
+      </div>
+      <div class="inc-item r r-d2">
+        <div class="inc-check">
+          <svg viewBox="0 0 11 9" fill="none"><path d="M1 4.5L4 7.5L10 1" stroke="#c9a84c" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div>
+          <div class="inc-title">Campañas de publicidad gestionadas</div>
+          <div class="inc-sub">Google Ads y Meta Ads optimizados continuamente por nuestro equipo especializado en salud dental.</div>
+        </div>
+      </div>
+      <div class="inc-item r r-d1">
+        <div class="inc-check">
+          <svg viewBox="0 0 11 9" fill="none"><path d="M1 4.5L4 7.5L10 1" stroke="#c9a84c" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div>
+          <div class="inc-title">Embudo de conversión optimizado</div>
+          <div class="inc-sub">Landing pages y secuencias de contacto que convierten visitantes en citas confirmadas.</div>
+        </div>
+      </div>
+      <div class="inc-item r r-d2">
+        <div class="inc-check">
+          <svg viewBox="0 0 11 9" fill="none"><path d="M1 4.5L4 7.5L10 1" stroke="#c9a84c" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div>
+          <div class="inc-title">Seguimiento automatizado de leads</div>
+          <div class="inc-sub">Ningún paciente potencial se pierde. Automatizaciones de WhatsApp, email y llamada.</div>
+        </div>
+      </div>
+      <div class="inc-item r r-d1">
+        <div class="inc-check">
+          <svg viewBox="0 0 11 9" fill="none"><path d="M1 4.5L4 7.5L10 1" stroke="#c9a84c" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div>
+          <div class="inc-title">Dashboard de resultados en tiempo real</div>
+          <div class="inc-sub">Ves exactamente cuántos leads entran, cuántas citas se generan y el coste por cada una.</div>
+        </div>
+      </div>
+      <div class="inc-item r r-d2">
+        <div class="inc-check">
+          <svg viewBox="0 0 11 9" fill="none"><path d="M1 4.5L4 7.5L10 1" stroke="#c9a84c" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div>
+          <div class="inc-title">Soporte y revisión semanal</div>
+          <div class="inc-sub">Reuniones semanales para revisar métricas, ajustar la estrategia y escalar lo que funciona.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── FAQ ──────────────────────────────── -->
+<section class="sec-alt">
+  <div class="wrap">
+    <div class="r" style="text-align:center">
+      <div class="eyebrow" style="justify-content:center">Preguntas frecuentes</div>
+      <h2 class="sec-title">Todo lo que<br/>quieres <em>saber</em></h2>
+    </div>
+    <div class="faq-list">
+      <div class="faq-item">
+        <button class="faq-q">
+          <span class="faq-q-text">¿Cuánto tiempo tarda en verse resultados?</span>
+          <span class="faq-icon"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6h8M6 2l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        </button>
+        <div class="faq-a"><div class="faq-a-inner">La mayoría de clínicas empiezan a recibir leads cualificados en las primeras 2–3 semanas. Los primeros resultados sólidos se dan entre los 30 y 60 días. El sistema alcanza su máximo rendimiento a los 90 días de funcionamiento continuo.</div></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">
+          <span class="faq-q-text">¿Necesito experiencia previa en marketing digital?</span>
+          <span class="faq-icon"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6h8M6 2l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        </button>
+        <div class="faq-a"><div class="faq-a-inner">No, en absoluto. RESULTISE es un sistema llave en mano. Nuestro equipo se encarga de todo: estrategia, campañas, creatividades, seguimiento y optimización. Tu único trabajo es atender a los pacientes que llegan.</div></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">
+          <span class="faq-q-text">¿Cómo funciona la garantía de ROI 3×?</span>
+          <span class="faq-icon"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6h8M6 2l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        </button>
+        <div class="faq-a"><div class="faq-a-inner">Si en 90 días no obtienes al menos 3 veces tu inversión en valor de pacientes captados, te devolvemos el dinero sin preguntas. Medimos los resultados conjuntamente desde el primer día y si no se cumplen los objetivos acordados, honramos nuestra garantía.</div></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">
+          <span class="faq-q-text">¿Solo trabajáis con clínicas dentales?</span>
+          <span class="faq-icon"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6h8M6 2l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        </button>
+        <div class="faq-a"><div class="faq-a-inner">Sí. Trabajamos exclusivamente con clínicas dentales en España. Esta especialización nos permite conocer a fondo el sector y las mejores estrategias para atraer pacientes de alto valor. No somos una agencia generalista.</div></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">
+          <span class="faq-q-text">¿Trabajáis con una sola clínica por zona?</span>
+          <span class="faq-icon"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6h8M6 2l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        </button>
+        <div class="faq-a"><div class="faq-a-inner">Sí. Para garantizar resultados y evitar conflictos de interés, solo trabajamos con una clínica por área geográfica. Por eso las plazas son limitadas. Si tienes interés, te recomendamos reservar tu llamada cuanto antes para asegurar tu zona.</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── CTA ───────────────────────────────── -->
+<section class="cta-sec">
+  <div class="wrap cta-sec-inner r">
+    <div class="eyebrow" style="justify-content:center">Plazas limitadas</div>
+    <h2 class="cta-title">Solo aceptamos <em>3 clínicas nuevas</em> al mes</h2>
+    <p class="cta-sub">Para garantizar resultados, limitamos las incorporaciones. Reserva tu llamada gratuita hoy y asegura tu zona.</p>
+    <a href="#reservar" class="btn-gold" style="font-size:0.85rem;padding:18px 44px">
+      Reservar mi llamada gratuita
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
+    <div class="cta-guarantee">
+      <span>✦</span> Sin compromiso · Llamada de 30 min · Valoramos si podemos ayudarte
+    </div>
+  </div>
+</section>
+
+<!-- ── FORM ──────────────────────────────── -->
+<section id="reservar">
+  <div class="wrap">
+    <div class="form-wrap">
+      <div class="form-head r">
+        <div class="eyebrow" style="justify-content:center">Reservar llamada</div>
+        <h2 class="sec-title" style="font-size:clamp(1.9rem,3.5vw,2.6rem)">Habla con<br/><em>nuestro equipo</em></h2>
+        <p class="sec-sub" style="margin:16px auto 0;text-align:center;max-width:420px">Completa el formulario y te contactamos en menos de 24 horas para agendar tu sesión estratégica gratuita.</p>
+      </div>
+      <div class="form-card r">
+        <form id="contact-form">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="nombre">Nombre</label>
+              <input type="text" id="nombre" name="nombre" placeholder="Dr. García" required/>
+            </div>
+            <div class="form-group">
+              <label for="clinica">Nombre de la clínica</label>
+              <input type="text" id="clinica" name="clinica" placeholder="Clínica Dental..." required/>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="email">Email profesional</label>
+            <input type="email" id="email" name="email" placeholder="dr@tuclinica.es" required/>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="telefono">Teléfono</label>
+              <input type="tel" id="telefono" name="telefono" placeholder="+34 6XX XXX XXX" required/>
+            </div>
+            <div class="form-group">
+              <label for="ciudad">Ciudad</label>
+              <input type="text" id="ciudad" name="ciudad" placeholder="Madrid, Barcelona…" required/>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="pacientes">Pacientes nuevos al mes (actualmente)</label>
+            <select id="pacientes" name="pacientes" required>
+              <option value="" disabled selected>Selecciona una opción</option>
+              <option value="menos-10">Menos de 10</option>
+              <option value="10-20">Entre 10 y 20</option>
+              <option value="20-40">Entre 20 y 40</option>
+              <option value="mas-40">Más de 40</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="objetivo">¿Cuál es tu principal objetivo? (opcional)</label>
+            <textarea id="objetivo" name="objetivo" placeholder="Ej: Quiero llenar más la agenda con pacientes de implantes y ortodoncia…"></textarea>
+          </div>
+          <button type="submit" class="submit-btn" id="submit-btn">Reservar mi llamada gratuita →</button>
+          <div id="form-error">Hubo un problema al enviar el formulario. Por favor, inténtalo de nuevo.</div>
+        </form>
+        <div id="form-success">
+          <div class="s-icon">✓</div>
+          <h3>¡Solicitud recibida!</h3>
+          <p>Nos pondremos en contacto contigo en menos de 24 horas para confirmar tu sesión estratégica gratuita.<br/><br/>Revisa también tu bandeja de spam por si acaso.</p>
+        </div>
+        <p class="form-note">🔒 Tus datos están protegidos conforme al RGPD. Nunca los compartimos con terceros.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── FOOTER ────────────────────────────── -->
+<footer>
+  <div class="wrap footer-inner">
+    <div class="footer-logo">RESULT<em>ISE</em></div>
+    <div class="footer-copy">© 2025 RESULTISE · Sistema de captación para clínicas dentales · España</div>
+    <div class="footer-links">
+      <a href="politica-privacidad.html">Política de Privacidad</a>
+      <a href="aviso-legal.html">Aviso Legal</a>
+    </div>
+  </div>
+</footer>
+
+<!-- ══ SCRIPTS ════════════════════════════ -->
+<script>
+/* Custom cursor */
+const cur = document.getElementById('cur');
+const curR = document.getElementById('curR');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px'});
+(function loop(){rx+=(mx-rx)*0.12;ry+=(my-ry)*0.12;curR.style.left=rx+'px';curR.style.top=ry+'px';requestAnimationFrame(loop)})();
+document.querySelectorAll('a,button,.btn-gold,.nav-cta').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{cur.style.width='20px';cur.style.height='20px';curR.style.width='60px';curR.style.height='60px'});
+  el.addEventListener('mouseleave',()=>{cur.style.width='10px';cur.style.height='10px';curR.style.width='36px';curR.style.height='36px'});
+});
+
+/* Nav */
+const nav=document.getElementById('nav');
+window.addEventListener('scroll',()=>nav.classList.toggle('stuck',window.scrollY>50));
+
+/* Mobile menu */
+function toggleMenu(){
+  const m=document.getElementById('mobileMenu');
+  m.classList.toggle('open');
+}
+function closeMenu(){
+  document.getElementById('mobileMenu').classList.remove('open');
+}
+
+/* Scroll reveal */
+const ro=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');ro.unobserve(e.target)}});
+},{threshold:0.1});
+document.querySelectorAll('.r,.r-left,.r-right').forEach(el=>ro.observe(el));
+
+/* Animated bars */
+const bars=document.querySelectorAll('.pv-fill');
+const bo=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting){e.target.style.width=e.target.dataset.w;bo.unobserve(e.target)}});
+},{threshold:0.5});
+bars.forEach(b=>bo.observe(b));
+
+/* FAQ */
+document.querySelectorAll('.faq-q').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    const item=btn.closest('.faq-item');
+    const isOpen=item.classList.contains('open');
+    document.querySelectorAll('.faq-item').forEach(i=>i.classList.remove('open'));
+    if(!isOpen)item.classList.add('open');
+  });
+});
+
+/* Form → Google Sheets
+   Replace the URL below with your Google Apps Script Web App URL.
+   
+   Setup steps:
+   1. Create a Google Sheet with columns:
+      Timestamp | Nombre | Clínica | Email | Teléfono | Ciudad | Pacientes/mes | Objetivo
+   2. Extensions > Apps Script > paste:
+   
+   function doPost(e) {
+     var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+     var data = JSON.parse(e.postData.contents);
+     sheet.appendRow([data.fecha,data.nombre,data.clinica,data.email,data.telefono,data.ciudad,data.pacientes,data.objetivo]);
+     return ContentService.createTextOutput(JSON.stringify({status:'ok'})).setMimeType(ContentService.MimeType.JSON);
+   }
+   
+   3. Deploy > New deployment > Web App > Anyone > Deploy > Copy URL > paste below
+*/
+const GS_URL='https://script.google.com/macros/s/YOUR_SCRIPT_ID_HERE/exec';
+const form=document.getElementById('contact-form');
+const btn=document.getElementById('submit-btn');
+const ok=document.getElementById('form-success');
+const err=document.getElementById('form-error');
+
+form.addEventListener('submit',async e=>{
+  e.preventDefault();
+  err.style.display='none';
+  btn.disabled=true;btn.textContent='Enviando…';
+  const data={
+    nombre:document.getElementById('nombre').value.trim(),
+    clinica:document.getElementById('clinica').value.trim(),
+    email:document.getElementById('email').value.trim(),
+    telefono:document.getElementById('telefono').value.trim(),
+    ciudad:document.getElementById('ciudad').value.trim(),
+    pacientes:document.getElementById('pacientes').value,
+    objetivo:document.getElementById('objetivo').value.trim(),
+    fecha:new Date().toLocaleString('es-ES')
+  };
+  try{
+    await fetch(GS_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});
+    form.style.display='none';ok.style.display='block';
+  }catch(er){
+    err.style.display='block';
+    btn.disabled=false;btn.textContent='Reservar mi llamada gratuita →';
+  }
+});
+</script>
+</body>
+</html>
