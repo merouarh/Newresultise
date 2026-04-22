@@ -1390,23 +1390,6 @@ document.querySelectorAll('.faq-q').forEach(btn=>{
   });
 });
 
-/* Form → Google Sheets
-   Replace the URL below with your Google Apps Script Web App URL.
-   
-   Setup steps:
-   1. Create a Google Sheet with columns:
-      Timestamp | Nombre | Clínica | Email | Teléfono | Ciudad | Pacientes/mes | Objetivo
-   2. Extensions > Apps Script > paste:
-   
-   function doPost(e) {
-     var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
-     var data = JSON.parse(e.postData.contents);
-     sheet.appendRow([data.fecha,data.nombre,data.clinica,data.email,data.telefono,data.ciudad,data.pacientes,data.objetivo]);
-     return ContentService.createTextOutput(JSON.stringify({status:'ok'})).setMimeType(ContentService.MimeType.JSON);
-   }
-   
-   3. Deploy > New deployment > Web App > Anyone > Deploy > Copy URL > paste below
-*/
 const GS_URL='https://script.google.com/macros/s/AKfycbzX8OP-XTfr8hrmdDWbT4nGjErl_JTUWNXdYbMURkVrItc48YRrCWHMn4uWFAgVrdOmfQ/exec';
 const form=document.getElementById('contact-form');
 const btn=document.getElementById('submit-btn');
